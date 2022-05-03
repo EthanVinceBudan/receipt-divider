@@ -21,20 +21,20 @@ A valid receipt file can have any extension, as long as it can be interpreted as
 
 ### Example File
 
-`
-	paid by: Alice
-	5.99 Alice,Bob,Charles
-	13.99 Bob,Charles
-	2.99 Dylan
-	4.99 Alice,Dylan
-`
+```
+paid by: Alice
+5.99 Alice,Bob,Charles
+13.99 Bob,Charles
+2.99 Dylan
+4.99 Alice,Dylan
+```
 
 generated output:
 
-`
-	total of receipt example.receipt = $27.96
-	----------------------------------
-	Bob owes Alice : $8.99
-	Charles owes Alice : $8.99
-	Dylan owes Alice : $5.49
-`
+```
+total of receipt example.receipt = $27.96
+----------------------------------
+Bob owes Alice : $8.99
+Charles owes Alice : $8.99
+Dylan owes Alice : $5.49
+```
