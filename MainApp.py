@@ -36,7 +36,7 @@ class ItemDisplay(ttk.Frame):
     def get_people(self):
         return [i.get() for i in self.__people]
 
-    def __str__(self):
+    def to_string(self):
         return f"Item {self.get_name()} at ${self.get_price()}: {self.get_people()}"
 
 
@@ -55,11 +55,9 @@ class ReceiptDisplay(ttk.Frame):
         self.__build_ui()
 
     def __build_ui(self):
-        self.__headerFrame = ttk.Frame(self,style="Danger.TFrame")
-        self.__headerFrame.grid(row=0,column=0,sticky="nsew")
-        self.__headerFrame.columnconfigure(0,weight=1)
-        ttk.Label(self.__headerFrame,textvariable=self.__name).grid(row=0,column=0)
-        ttk.Button(self.__headerFrame,text="+",command=self.__add_item,width=2).grid(row=0,column=1,sticky="e")
+        self.__headerFrame = ttk.Frame(self)
+        self.__headerFrame.grid(row=0,column=0,sticky="w")
+        ttk.Button(self.__headerFrame,text="Add Item",command=self.__add_item).grid(row=0,column=1)
         self.__itemsFrame = ttk.Frame(self)
         self.__itemsFrame.grid(row=1,column=0)
 
@@ -82,8 +80,11 @@ class ReceiptDisplay(ttk.Frame):
 
     def set_name(self,newname):
         self.__name.set(newname)
+        
+    def get_name(self):
+        return self.__name.get()
 
-    def __str__(self):
+    def to_string(self):
         out = f"Receipt {self.__id}:\n"
         for item in self.__items:
             out += f"\t{item}\n"
@@ -107,15 +108,35 @@ class ReceiptDisplay(ttk.Frame):
         self.__numPeople += 1
         for item in self.__items:
             item.add_person()
-
+            
+            
+class MainApp(tk.Frame):
+    
+    def __init__(self,parent):
+        tk.Frame.__init__(self,parent)
+        self.__numPeople = 0
+        self.__receipts = []
+        self.__receiptNotebook = ttk.Notebook(self)
+        self.__receiptNotebook.grid(row=0,column=0)
+        buttonFrame = ttk.Frame(self)
+        buttonFrame.grid(row=1,column=0)
+        #ttk.Button(buttonFrame,text="Print",command=lambda:print(rd)).grid(row=0,column=0)
+        #ttk.Button(buttonFrame,text="Calculate",command=lambda:print(rd.calc())).grid(row=0,column=1)
+        ttk.Button(buttonFrame,text="Add Person",command=self.__add_person).grid(row=0,column=2)
+        ttk.Button(buttonFrame,text="Add Receipt",command=self.__add_receipt).grid(row=0,column=3)
+        
+        
+    def __add_receipt(self):
+        newReceipt = ReceiptDisplay(self.__receiptNotebook,self.__numPeople)
+        self.__receipts.append(newReceipt)
+        self.__receiptNotebook.add(newReceipt,text=newReceipt.get_name())
+        
+    def __add_person(self):
+        self.__numPeople += 1
+        for r in self.__receipts:
+            r.add_person()
 
 if __name__ == "__main__":
     root = tk.Tk()
-    rd = ReceiptDisplay(root,numPeople=4)
-    rd.grid(row=0,column=0)
-    buttonFrame = ttk.Frame(root)
-    buttonFrame.grid(row=1,column=0)
-    ttk.Button(buttonFrame,text="Print",command=lambda:print(rd)).grid(row=0,column=0)
-    ttk.Button(buttonFrame,text="Calculate",command=lambda:print(rd.calc())).grid(row=0,column=1)
-    ttk.Button(buttonFrame,text="Add Person",command=rd.add_person).grid(row=0,column=2)
+    MainApp(root).pack()
     root.mainloop()
